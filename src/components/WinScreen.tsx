@@ -10,11 +10,16 @@ interface Props {
 export function WinScreen({ game, onNewCard, onChangeCategory }: Props) {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
-      {/* Assertive so the win is announced immediately to screen readers. */}
-      <h1
-        className="text-5xl font-extrabold tracking-tight text-emerald-400"
-        aria-live="assertive"
-      >
+      {/*
+        A role="alert" node inserted into the DOM (this screen mounts on win)
+        is announced by screen readers. aria-live on an element that mounts
+        with its content already present is not reliably announced — so the
+        announcement lives here and the visible heading stays a plain heading.
+      */}
+      <p role="alert" className="sr-only">
+        Bingo! You won{game.winningWord ? ` with ${game.winningWord}` : ''}.
+      </p>
+      <h1 className="text-5xl font-extrabold tracking-tight text-emerald-400">
         BINGO!
       </h1>
 

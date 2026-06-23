@@ -13,7 +13,7 @@ interface Props {
 export function BingoCard({ card, winningIds, oneAwayIds, onToggle }: Props) {
   return (
     <div
-      role="grid"
+      role="group"
       aria-label="Bingo card"
       className="grid grid-cols-5 gap-1.5 sm:gap-2"
     >

@@ -21,7 +21,7 @@ export function BingoSquare({ square, isWinning, isOneAway, onToggle }: Props) {
       aria-pressed={isFilled}
       aria-label={`${word}${isFilled ? ', marked' : ''}`}
       className={cn(
-        'relative flex aspect-square items-center justify-center rounded-md border-2 p-1 text-center',
+        'relative flex aspect-square items-center justify-center overflow-hidden rounded-md border-2 p-1 text-center',
         'text-[11px] font-medium leading-tight sm:text-sm',
         'transition-colors focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:ring-sky-400',
@@ -45,7 +45,7 @@ export function BingoSquare({ square, isWinning, isOneAway, onToggle }: Props) {
           ✓
         </span>
       )}
-      <span className={cn(isFreeSpace && 'font-bold uppercase tracking-wide')}>
+      <span className={cn('break-words', isFreeSpace && 'font-bold uppercase tracking-wide')}>
         {isFreeSpace ? '★ FREE' : word}
       </span>
     </button>

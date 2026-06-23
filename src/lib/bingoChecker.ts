@@ -63,9 +63,9 @@ export interface ClosestLine {
 }
 
 /**
- * The line closest to completion that is not already won, for the
- * X/24 counter's "one-away" hint. Returns null if no line is partially filled
- * beyond the baseline or a bingo already exists.
+ * The incomplete line closest to completion, for the "one-away" hint.
+ * Already-complete lines are skipped; returns null only if every line is
+ * complete (i.e. the whole card is filled).
  */
 export function getClosestToWin(card: BingoCard): ClosestLine | null {
   let closest: ClosestLine | null = null
