@@ -66,6 +66,7 @@ export function GameBoard({
 
   const {
     isSupported,
+    unavailable,
     isListening,
     error,
     transcript,
@@ -74,6 +75,10 @@ export function GameBoard({
     stop,
     reset,
   } = useSpeechRecognition({ onResult: handleResult })
+
+  // API present but proven non-functional at runtime (e.g. Brave) counts as
+  // "no speech" — degrade to manual play, same as an unsupported browser.
+  const speechUsable = isSupported && !unavailable
 
   // Reset per-card detection state whenever a fresh card starts.
   useEffect(() => {
@@ -112,7 +117,7 @@ export function GameBoard({
   // Only a permission denial is a real "error" — transient errors like
   // 'no-speech'/'aborted' auto-recover (safe restart), so don't alarm the user.
   const fatalError = error === 'not-allowed' || error === 'service-not-allowed'
-  const status: ListenStatus = !isSupported
+  const status: ListenStatus = !speechUsable
     ? 'no-mic'
     : fatalError
       ? 'error'
@@ -137,13 +142,13 @@ export function GameBoard({
         </p>
       </header>
 
-      {!isSupported && <UnsupportedBanner />}
+      {!speechUsable && <UnsupportedBanner />}
 
-      {isSupported && micChoice === 'pending' && (
+      {speechUsable && micChoice === 'pending' && (
         <MicPermissionGate onEnable={handleEnableMic} onSkip={onSkipMic} />
       )}
 
-      {isSupported && micChoice === 'enabled' && (
+      {speechUsable && micChoice === 'enabled' && (
         <TranscriptPanel
           status={status}
           transcript={transcript}
@@ -154,7 +159,7 @@ export function GameBoard({
         />
       )}
 
-      {isSupported && micChoice === 'skipped' && (
+      {speechUsable && micChoice === 'skipped' && (
         <div className="text-center">
           <Button variant="ghost" className="text-xs" onClick={handleEnableMic}>
             Enable microphone
