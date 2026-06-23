@@ -3,21 +3,24 @@ import type { CategoryId } from './types'
 import { useGame } from './hooks/useGame'
 import { LandingPage } from './components/LandingPage'
 import { CategorySelect } from './components/CategorySelect'
-import { GameBoard } from './components/GameBoard'
+import { GameBoard, type MicChoice } from './components/GameBoard'
 import { WinScreen } from './components/WinScreen'
 
 type Screen = 'landing' | 'category' | 'game' | 'win'
 
 function App() {
-  const { game, startGame, newCard, toggleSquare, reset } = useGame()
+  const { game, startGame, newCard, toggleSquare, autoFill, reset } = useGame()
   const [screen, setScreen] = useState<Screen>('landing')
+  // Mic preference lives here so it persists across game remounts (no re-prompt
+  // every new round).
+  const [micChoice, setMicChoice] = useState<MicChoice>('pending')
 
   // Route to the win screen the moment a bingo is detected.
   useEffect(() => {
     if (game.status === 'won') setScreen('win')
   }, [game.status])
 
-  // In progress = playing with at least one manual mark beyond the FREE center.
+  // In progress = playing with at least one manual/auto mark beyond the FREE center.
   const inProgress = game.status === 'playing' && game.filledCount > 1
 
   const confirmDiscard = () =>
@@ -51,7 +54,11 @@ function App() {
       {screen === 'game' && (
         <GameBoard
           game={game}
+          micChoice={micChoice}
           onToggle={toggleSquare}
+          onAutoFill={autoFill}
+          onEnableMic={() => setMicChoice('enabled')}
+          onSkipMic={() => setMicChoice('skipped')}
           onNewCard={handleNewCard}
           onChangeCategory={handleChangeCategory}
         />

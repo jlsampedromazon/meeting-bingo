@@ -23,7 +23,8 @@ export function BingoSquare({ square, isWinning, isOneAway, onToggle }: Props) {
       className={cn(
         'relative flex aspect-square items-center justify-center overflow-hidden rounded-md border-2 p-1 text-center',
         'text-[11px] font-medium leading-tight sm:text-sm',
-        'transition-colors focus-visible:outline-none focus-visible:ring-2',
+        'transition-colors duration-300 motion-reduce:transition-none',
+        'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:ring-sky-400',
         // Unfilled
         !isFilled && 'border-slate-600 bg-slate-800 text-slate-200 hover:border-slate-400',

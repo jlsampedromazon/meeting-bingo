@@ -42,6 +42,8 @@ export interface UseGame {
   newCard: () => void
   /** Toggle a square's filled state (no-op on the FREE space). */
   toggleSquare: (id: string) => void
+  /** Auto-fill squares matching detected words (from speech). */
+  autoFill: (words: string[]) => void
   /** Back to the initial idle state. */
   reset: () => void
 }
@@ -95,5 +97,48 @@ export function useGame(): UseGame {
     })
   }, [])
 
-  return { game, startGame, newCard, toggleSquare, reset }
+  const autoFill = useCallback((words: string[]) => {
+    if (words.length === 0) return
+    setGame((prev) => {
+      if (!prev.card || prev.status === 'won') return prev
+
+      const wanted = new Set(words.map((w) => w.toLowerCase()))
+      const card = cloneCard(prev.card)
+      let lastFilledWord: string | null = null
+      let changed = false
+
+      for (const row of card.squares) {
+        for (const sq of row) {
+          if (!sq.isFreeSpace && !sq.isFilled && wanted.has(sq.word.toLowerCase())) {
+            sq.isFilled = true
+            sq.isAutoFilled = true
+            sq.filledAt = Date.now()
+            lastFilledWord = sq.word
+            changed = true
+          }
+        }
+      }
+
+      if (!changed) return prev
+
+      const filledCount = countFilled(card)
+      const winningLine = checkForBingo(card)
+
+      if (winningLine) {
+        return {
+          ...prev,
+          card,
+          filledCount,
+          status: 'won',
+          winningLine,
+          winningWord: lastFilledWord,
+          completedAt: Date.now(),
+        }
+      }
+
+      return { ...prev, card, filledCount }
+    })
+  }, [])
+
+  return { game, startGame, newCard, toggleSquare, autoFill, reset }
 }
