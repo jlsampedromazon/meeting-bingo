@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { GameState } from '../types'
 import { getClosestToWin } from '../lib/bingoChecker'
 import { detectWords } from '../lib/wordDetector'
@@ -82,11 +82,21 @@ export function GameBoard({
     reset()
   }, [game.startedAt, reset])
 
-  // Auto-start listening once the user opts in; idempotent and won't
-  // re-fire on Stop (deps don't include isListening).
+  // Resume listening on REMOUNT when the mic was already enabled this session
+  // (e.g. starting a new card after a win). Captured at mount so it does NOT
+  // double-fire when the user first enables via the gesture handler below.
+  const micEnabledAtMount = useRef(micChoice === 'enabled')
   useEffect(() => {
-    if (micChoice === 'enabled' && isSupported) start()
-  }, [micChoice, isSupported, start])
+    if (micEnabledAtMount.current && isSupported) start()
+  }, [isSupported, start])
+
+  // Start recognition INSIDE the click gesture. Calling start() from an effect
+  // (one tick after the click) can silently fail to engage the mic on Safari
+  // and some Chrome versions even when permission is granted.
+  const handleEnableMic = useCallback(() => {
+    onEnableMic()
+    start()
+  }, [onEnableMic, start])
 
   const closest = useMemo(() => (card ? getClosestToWin(card) : null), [card])
   const oneAwayIds = useMemo(
@@ -99,9 +109,12 @@ export function GameBoard({
   const categoryName = CATEGORIES.find((c) => c.id === category)?.name ?? 'Bingo'
   const markedReal = Math.max(0, filledCount - 1)
 
+  // Only a permission denial is a real "error" — transient errors like
+  // 'no-speech'/'aborted' auto-recover (safe restart), so don't alarm the user.
+  const fatalError = error === 'not-allowed' || error === 'service-not-allowed'
   const status: ListenStatus = !isSupported
     ? 'no-mic'
-    : error
+    : fatalError
       ? 'error'
       : isListening
         ? 'listening'
@@ -127,7 +140,7 @@ export function GameBoard({
       {!isSupported && <UnsupportedBanner />}
 
       {isSupported && micChoice === 'pending' && (
-        <MicPermissionGate onEnable={onEnableMic} onSkip={onSkipMic} />
+        <MicPermissionGate onEnable={handleEnableMic} onSkip={onSkipMic} />
       )}
 
       {isSupported && micChoice === 'enabled' && (
@@ -143,7 +156,7 @@ export function GameBoard({
 
       {isSupported && micChoice === 'skipped' && (
         <div className="text-center">
-          <Button variant="ghost" className="text-xs" onClick={onEnableMic}>
+          <Button variant="ghost" className="text-xs" onClick={handleEnableMic}>
             Enable microphone
           </Button>
         </div>
