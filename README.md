@@ -5,6 +5,18 @@ category, get a randomized 5×5 card, and squares auto-fill when buzzwords are d
 browser's Web Speech API. Manual tap is always available. Five in a row → confetti + a shareable
 result. Zero backend; deploys as a static site.
 
+**Live:** https://meeting-bingo-jade.vercel.app
+
+## Features
+
+- Three buzzword packs: **Agile & Scrum**, **Corporate Speak**, **Tech & Engineering**.
+- 5×5 card with a free center; auto-fill via speech, plus always-on manual tap.
+- Bingo on any of the 12 lines (5 rows + 5 columns + 2 diagonals) → confetti + win stats.
+- Share your result (native share sheet on mobile, clipboard otherwise) including a play link.
+- In-progress games persist across reloads (localStorage).
+- Accessible: keyboard-operable squares, `aria-live` announcements, and `prefers-reduced-motion`
+  support. Win cue isn't color-only.
+
 ## Stack
 
 React 18 · TypeScript · Vite 5 · Tailwind CSS 3.3.5 · Web Speech API · `canvas-confetti`. State is
@@ -34,8 +46,9 @@ npm run test       # vitest run (pure lib modules)
 
 ## Deploy (Vercel)
 
-`vercel.json` is committed (static build, SPA rewrite, `Permissions-Policy: microphone=(self)`).
-Deploy by importing the repo at vercel.com or running the Vercel CLI:
+Deployed on Vercel (see the live link above). `vercel.json` is committed (static build, SPA rewrite,
+`Permissions-Policy: microphone=(self)`). Deploy by importing the repo at vercel.com or running the
+Vercel CLI:
 
 ```bash
 npx vercel        # preview deploy
@@ -46,4 +59,3 @@ npx vercel --prod # production deploy
 
 Planning lives in `docs/` — `IMPLEMENTATION_PLAN.md` is the authoritative build spec (it tracks the
 Linear project and supersedes the PRD/architecture/UXR docs where they conflict).
-</content>
