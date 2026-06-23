@@ -10,7 +10,10 @@ type Screen = 'landing' | 'category' | 'game' | 'win'
 
 function App() {
   const { game, startGame, newCard, toggleSquare, autoFill, reset } = useGame()
-  const [screen, setScreen] = useState<Screen>('landing')
+  // Resume to the right screen after a reload of a persisted game.
+  const [screen, setScreen] = useState<Screen>(() =>
+    game.status === 'won' ? 'win' : game.status === 'playing' ? 'game' : 'landing',
+  )
   // Mic preference lives here so it persists across game remounts (no re-prompt
   // every new round).
   const [micChoice, setMicChoice] = useState<MicChoice>('pending')
@@ -46,7 +49,7 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 px-4 py-10 text-slate-100">
+    <div className="flex min-h-screen flex-col items-center justify-center overflow-x-hidden bg-slate-900 px-4 py-6 text-slate-100 sm:py-10">
       {screen === 'landing' && <LandingPage onStart={() => setScreen('category')} />}
 
       {screen === 'category' && <CategorySelect onSelect={handleSelectCategory} />}

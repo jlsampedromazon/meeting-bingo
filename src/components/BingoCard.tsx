@@ -7,10 +7,18 @@ interface Props {
   winningIds?: Set<string>
   /** Square IDs in the one-away line (highlighted hint). */
   oneAwayIds?: Set<string>
-  onToggle: (id: string) => void
+  /** When false, the card is read-only (e.g. the win screen). */
+  interactive?: boolean
+  onToggle?: (id: string) => void
 }
 
-export function BingoCard({ card, winningIds, oneAwayIds, onToggle }: Props) {
+export function BingoCard({
+  card,
+  winningIds,
+  oneAwayIds,
+  interactive = true,
+  onToggle,
+}: Props) {
   return (
     <div
       role="group"
@@ -23,6 +31,7 @@ export function BingoCard({ card, winningIds, oneAwayIds, onToggle }: Props) {
           square={square}
           isWinning={winningIds?.has(square.id)}
           isOneAway={oneAwayIds?.has(square.id)}
+          interactive={interactive}
           onToggle={onToggle}
         />
       ))}

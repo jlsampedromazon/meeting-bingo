@@ -1,7 +1,10 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import type { BingoCard, CategoryId, GameState } from '../types'
 import { generateCard } from '../lib/cardGenerator'
 import { checkForBingo, countFilled } from '../lib/bingoChecker'
+import { useLocalStorage } from './useLocalStorage'
+
+const STORAGE_KEY = 'meeting-bingo:game'
 
 const INITIAL_STATE: GameState = {
   status: 'idle',
@@ -49,17 +52,19 @@ export interface UseGame {
 }
 
 export function useGame(): UseGame {
-  const [game, setGame] = useState<GameState>(INITIAL_STATE)
+  // Persisted so an in-progress game survives a reload (plan §8.9 — timestamps
+  // are epoch numbers, so JSON round-trips cleanly).
+  const [game, setGame] = useLocalStorage<GameState>(STORAGE_KEY, INITIAL_STATE)
 
   const startGame = useCallback((categoryId: CategoryId) => {
     setGame(freshGameForCategory(categoryId))
-  }, [])
+  }, [setGame])
 
   const newCard = useCallback(() => {
     setGame((prev) => (prev.category ? freshGameForCategory(prev.category) : prev))
-  }, [])
+  }, [setGame])
 
-  const reset = useCallback(() => setGame(INITIAL_STATE), [])
+  const reset = useCallback(() => setGame(INITIAL_STATE), [setGame])
 
   const toggleSquare = useCallback((id: string) => {
     setGame((prev) => {
@@ -95,7 +100,7 @@ export function useGame(): UseGame {
 
       return { ...prev, card, filledCount }
     })
-  }, [])
+  }, [setGame])
 
   const autoFill = useCallback((words: string[]) => {
     if (words.length === 0) return
@@ -138,7 +143,7 @@ export function useGame(): UseGame {
 
       return { ...prev, card, filledCount }
     })
-  }, [])
+  }, [setGame])
 
   return { game, startGame, newCard, toggleSquare, autoFill, reset }
 }

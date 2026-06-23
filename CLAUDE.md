@@ -2,12 +2,17 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current state: planning only, no app code yet
+## Current state: MVP built (Phases 0–3 complete)
 
-This repo currently contains **only documents** — no `src/`, no `package.json`, nothing scaffolded.
-The app described below does not exist yet; building it is the work. Before writing code, read
-`docs/IMPLEMENTATION_PLAN.md` — it is the reviewed, authoritative build spec and supersedes the
-PRD/architecture/UXR docs wherever they conflict.
+The app is implemented under `src/` and the toolchain is scaffolded (`package.json`, Vite, Tailwind
+3.3.5, Vitest, ESLint). All four build phases from `docs/IMPLEMENTATION_PLAN.md` are done and tracked
+in the Linear project "Meeting Bingo (MVP)" (issues JOS-5…JOS-22). The one remaining step is the
+actual Vercel deploy (JOS-22), which needs the maintainer's Vercel account — `vercel.json` is ready.
+
+`docs/IMPLEMENTATION_PLAN.md` remains the authoritative spec and supersedes the PRD/architecture/UXR
+docs wherever they conflict. Stack pinned to the plan: React 18, Vite 5, Tailwind 3.3.5 (exact),
+eslint-based lint, `tsc --noEmit` typecheck (current `create-vite` defaults to React 19 / Vite 8 /
+oxlint — intentionally not used).
 
 Source docs, in order of authority:
 - `docs/IMPLEMENTATION_PLAN.md` — **start here.** Build phases, scope decisions, and a `## Review
