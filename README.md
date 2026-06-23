@@ -26,8 +26,10 @@ npm run test       # vitest run (pure lib modules)
 
 - **Privacy:** the app does not record or store audio. Chrome/Safari Web Speech streams audio to a
   cloud recognizer, so we never claim "audio never leaves your device." Manual tap works everywhere.
-- **Browser support:** speech auto-fill needs the Web Speech API (Chrome/Edge/Safari). On Firefox the
-  mic UI is hidden and the game stays fully playable via manual taps.
+- **Browser support:** speech auto-fill needs a working Web Speech API — use **Chrome, Edge, or
+  Safari**. **Firefox** has no Web Speech API, and **Brave** ships the API but disables its speech
+  backend; in both, the app detects this, hides the mic UI, shows a banner, and stays fully playable
+  via **manual taps**.
 - A microphone needs a secure context (HTTPS or `localhost`).
 
 ## Deploy (Vercel)
