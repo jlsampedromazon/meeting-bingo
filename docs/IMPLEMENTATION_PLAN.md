@@ -121,6 +121,17 @@ src/
 
 ## 5. Build phases
 
+**Tracked in Linear** — project [Meeting Bingo (MVP)](https://linear.app/jose-sampedro-mazon/project/meeting-bingo-mvp-f711741b62fb)
+(start 2026-06-23, target 2026-07-03). Each phase is a milestone with target dates; issues carry
+detailed acceptance criteria and `blockedBy` dependencies.
+
+| Phase | Milestone target | Issues |
+|-------|------------------|--------|
+| Phase 0 — Scaffold | 2026-06-24 | JOS-5 |
+| Phase 1 — Core game (no speech) | 2026-06-26 | JOS-6 · JOS-7 · JOS-8 · JOS-9 · JOS-10 |
+| Phase 2 — Speech integration | 2026-06-30 | JOS-11 · JOS-12 · JOS-13 · JOS-14 · JOS-15 |
+| Phase 3 — Polish, persistence & ship | 2026-07-03 | JOS-16 · JOS-17 · JOS-18 · JOS-19 · JOS-20 · JOS-21 (QA) · JOS-22 (deploy/DoD) |
+
 ### Phase 0 — Scaffold (~10 min)
 1. `npm create vite@latest . -- --template react-ts` **directly in the repo root** (keep existing
    `README.md`/`docs/`/`.git`). If the CLI refuses a non-empty dir, scaffold to a temp dir and move
